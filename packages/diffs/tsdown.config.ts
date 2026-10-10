@@ -33,6 +33,22 @@ const config: UserConfig[] = defineConfig([
     platform: 'neutral',
     plugins: [
       {
+        name: 'deterministic-react-imports',
+        generateBundle(_options, bundle) {
+          // Rolldown may race React's injected JSX-runtime import against
+          // React DOM imports. Canonicalize only their contiguous preamble;
+          // leave all other dependencies and side-effect imports untouched.
+          for (const output of Object.values(bundle)) {
+            if (output.type !== 'chunk') continue;
+            output.code = output.code.replace(
+              /(?:^import [^\n]+ from "react(?:-dom)?(?:\/[^"\n]+)?";\n){2,}/gm,
+              (imports) =>
+                imports.trimEnd().split('\n').sort().join('\n') + '\n'
+            );
+          }
+        },
+      },
+      {
         name: 'postcss-diffs-css',
         async transform(code, id) {
           if (id.endsWith('.css?inline')) {

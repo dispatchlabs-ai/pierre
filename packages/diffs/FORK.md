@@ -10,8 +10,9 @@ fork builds only `packages/diffs`; unchanged `@pierre/theme` 2.0.0 and
 `@pierre/theming` 1.0.1 remain upstream dependencies. Apache-2.0 `LICENSE.md` is
 retained and `NOTICE` records modifications. No upstream PR has been filed.
 
-- Package name `@dispatchlabs/pierre-diffs`, first version `1.5.1-dispatch.1`.
-  Dispatch installs this as `@pierre/diffs` to retain all React/worker paths.
+- Package name `@dispatchlabs/pierre-diffs`, current version `1.5.1-dispatch.2`
+  (`.1` is the initial prerelease). Dispatch installs this as `@pierre/diffs` to
+  retain all React/worker paths.
 - Marker messages accept literal strings or host-owned HTMLElements, not
   `{html}`. Strings use textContent; neither marker path assigns innerHTML.
   Host-provided elements remain the caller's trust boundary.
