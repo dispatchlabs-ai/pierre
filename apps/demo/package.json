@@ -5,7 +5,7 @@
   "license": "apache-2.0",
   "type": "module",
   "dependencies": {
-    "@pierre/diffs": "workspace:*",
+    "@pierre/diffs": "workspace:@dispatchlabs/pierre-diffs@*",
     "@pierre/icons": "catalog:",
     "diff": "catalog:",
     "react": "catalog:",

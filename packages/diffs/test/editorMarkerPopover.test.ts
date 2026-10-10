@@ -353,6 +353,40 @@ describe('Editor marker popover placement', () => {
     }
   });
 
+  test('renders a marker message string as text, never HTML', async () => {
+    const MULTILINE = 'l0\nl1\nl2\nl3\nl4\nl5\nl6\nl7\nl8\nl9';
+    const { cleanup, editor, content } = await createMarkerFixture(MULTILINE);
+
+    try {
+      const payload = '<img src=x onerror=alert(1)><script>alert(2)</script>';
+      const markers: Marker[] = [
+        {
+          start: { line: 4, character: 0 },
+          end: { line: 4, character: 2 },
+          severity: 'error',
+          message: payload,
+        },
+      ];
+      editor.setMarkers(markers);
+
+      hoverMarkerLine(content, 5);
+      await wait(350);
+
+      const popover = findMarkerPopover(content);
+      const message = popover.querySelector<HTMLElement>(
+        '[data-marker-message]'
+      );
+      expect(message).not.toBeNull();
+      expect(
+        message!.querySelectorAll('img, script, iframe, svg, object, embed')
+          .length
+      ).toBe(0);
+      expect(message!.textContent).toBe(payload);
+    } finally {
+      cleanup();
+    }
+  });
+
   test('sets horizontal clamp bounds from the visible scroll viewport', async () => {
     const { cleanup, content } = createDirectMarkerFixture({
       gutterWidth: 40,

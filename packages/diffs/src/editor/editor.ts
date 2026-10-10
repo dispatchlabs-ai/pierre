@@ -286,6 +286,12 @@ function isVirtualizedEditorComponent<LAnnotation, Caret>(
 export interface EditorOptions<EType extends EditorType, LAnnotation, Caret> {
   /** The maximum number of entries to keep in the undo stack. */
   historyMaxEntries?: number;
+  /** Accessible name; defaults to the file name. */
+  ariaLabel?: string;
+  /** Enable native spelling suggestions. Automatic correction remains disabled. */
+  spellcheck?: boolean;
+  /** Tab moves focus by default; opt into code indentation explicitly. */
+  tabBehavior?: 'focus' | 'indent';
   /**
    * Retain and restore the attached component's vertical viewport position.
    * Defaults to false because scroll views generally contain multiple items.
@@ -1593,7 +1599,7 @@ export class Editor<
         autocapitalize: 'off',
         writingSuggestions: 'off',
         autocorrect: false,
-        spellcheck: false,
+        spellcheck: this.#options.spellcheck ?? false,
         translate: false,
       });
       if (this.#overlayElement !== undefined) {
@@ -1618,8 +1624,10 @@ export class Editor<
     // with the file name. The same content element is reused across file
     // switches (see File#applyFullRender), so refresh the label on every sync
     // rather than only when the element is first initialized above.
-    if (contentEl.ariaLabel !== fileOrDiff.name) {
-      contentEl.ariaLabel = fileOrDiff.name;
+    contentEl.spellcheck = this.#options.spellcheck ?? false;
+    const ariaLabel = this.#options.ariaLabel ?? fileOrDiff.name;
+    if (contentEl.ariaLabel !== ariaLabel) {
+      contentEl.ariaLabel = ariaLabel;
     }
 
     // Annotation rows, unified deleted rows, and hunk separators are
@@ -2499,6 +2507,10 @@ export class Editor<
           return;
         }
 
+        if (e.key === 'Tab' && this.#options.tabBehavior !== 'indent') {
+          return;
+        }
+
         const command = resolveEditorCommandFromKeyboardEvent(
           e,
           this.#options.keymap
@@ -2676,6 +2688,28 @@ export class Editor<
           return;
         }
         e.preventDefault();
+        if (e.inputType === 'insertReplacementText') {
+          // Spelling correction targets a browser range, not necessarily the caret.
+          const range = e.getTargetRanges()[0];
+          const replacement = e.data ?? e.dataTransfer?.getData('text/plain');
+          if (
+            range === undefined ||
+            replacement == null ||
+            !this.#rangeBelongsToEditor(range)
+          ) {
+            return;
+          }
+          const selection = convertSelection(range, DirectionNone);
+          if (selection === undefined) return;
+          this.#updateSelections([selection]);
+          this.#replaceSelectionText(
+            this.#editSession?.document?.normalizeEol(replacement) ??
+              replacement,
+            [selection],
+            true
+          );
+          return;
+        }
         this.#handleInput(e.inputType, e.data);
       }),
 

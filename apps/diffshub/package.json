@@ -4,7 +4,7 @@
   "private": true,
   "license": "apache-2.0",
   "dependencies": {
-    "@pierre/diffs": "workspace:*",
+    "@pierre/diffs": "workspace:@dispatchlabs/pierre-diffs@*",
     "@pierre/icons": "catalog:",
     "@pierre/theme": "workspace:*",
     "@pierre/theming": "workspace:*",

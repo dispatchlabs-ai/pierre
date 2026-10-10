@@ -5,7 +5,7 @@
   "license": "apache-2.0",
   "dependencies": {
     "@icons-pack/react-simple-icons": "catalog:",
-    "@pierre/diffs": "workspace:*",
+    "@pierre/diffs": "workspace:@dispatchlabs/pierre-diffs@*",
     "@pierre/highlights": "workspace:*",
     "@pierre/icons": "catalog:",
     "@pierre/theme": "workspace:*",

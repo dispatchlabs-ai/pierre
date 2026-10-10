@@ -1,11 +1,13 @@
 {
-  "name": "@pierre/diffs",
-  "version": "1.5.1",
+  "name": "@dispatchlabs/pierre-diffs",
+  "version": "1.5.1-dispatch.1",
   "license": "apache-2.0",
   "files": [
     "dist",
     "LICENSE.md",
-    "README.md"
+    "README.md",
+    "FORK.md",
+    "NOTICE"
   ],
   "type": "module",
   "sideEffects": [
@@ -67,8 +69,8 @@
     "prepublishOnly": "moon run diffs:prepublish"
   },
   "dependencies": {
-    "@pierre/theme": "workspace:*",
-    "@pierre/theming": "workspace:*",
+    "@pierre/theme": "2.0.0",
+    "@pierre/theming": "1.0.1",
     "@shikijs/transformers": "^3.0.0 || ^4.0.0",
     "diff": "catalog:",
     "hast-util-to-html": "catalog:",
@@ -105,5 +107,10 @@
     "react-dom": {
       "optional": true
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dispatchlabs-ai/pierre.git",
+    "directory": "packages/diffs"
   }
 }

@@ -17,7 +17,7 @@ export type MarkerSeverity = 'error' | 'warning' | 'info' | 'hint';
 
 export interface Marker extends Range {
   severity: MarkerSeverity;
-  message: string | { html: string } | HTMLElement;
+  message: string | HTMLElement;
   source?: string;
   metadata?: Record<string, unknown>;
 }
@@ -321,8 +321,6 @@ export class MarkerRenderer {
           content.textContent = message;
         } else if (message instanceof HTMLElement) {
           content.replaceChildren(message);
-        } else {
-          content.innerHTML = message.html;
         }
       }
       // Position after updating content: a different message size changes
@@ -345,9 +343,7 @@ export class MarkerRenderer {
             dataset: 'markerMessage',
             ...(typeof message === 'string'
               ? { textContent: message }
-              : message instanceof HTMLElement
-                ? { children: [message] }
-                : { innerHTML: message.html }),
+              : { children: [message] }),
           }),
         ],
       },
